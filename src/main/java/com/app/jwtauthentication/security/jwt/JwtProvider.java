@@ -3,7 +3,10 @@ package com.app.jwtauthentication.security.jwt;
 import com.app.jwtauthentication.security.services.UserPrinciple;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,7 +45,8 @@ public class JwtProvider {
 
     boolean validateJwtToken(String authToken) {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
+            JWT.require(Algorithm.HMAC256(jwtSecret)).build().verify(authToken);
+
             return true;
         } catch (SignatureException e) {
             logger.error("Invalid JWT signature -> Message: {} ", e);
@@ -60,9 +64,7 @@ public class JwtProvider {
     }
 
     String getUserNameFromJwtToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody().getSubject();
+        return JWT.require(Algorithm.HMAC256(jwtSecret)).build().verify(token).getSubject();
+
     }
 }
