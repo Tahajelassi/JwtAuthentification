@@ -46,7 +46,6 @@ public class JwtProvider {
     boolean validateJwtToken(String authToken) {
         try {
             JWT.require(Algorithm.HMAC256(jwtSecret)).build().verify(authToken);
-
             return true;
         } catch (SignatureException e) {
             logger.error("Invalid JWT signature -> Message: {} ", e);
