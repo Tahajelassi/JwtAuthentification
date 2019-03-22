@@ -10,7 +10,6 @@ import com.app.jwtauthentication.model.User;
 import com.app.jwtauthentication.repository.RoleRepository;
 import com.app.jwtauthentication.repository.UserRepository;
 import com.app.jwtauthentication.security.jwt.JwtProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,20 +31,25 @@ import java.util.Set;
 @RequestMapping("/api/auth")
 public class AuthRestAPIs {
 
-    @Autowired
-    AuthenticationManager authenticationManager;
 
-    @Autowired
-    UserRepository userRepository;
+    private AuthenticationManager authenticationManager;
 
-    @Autowired
-    RoleRepository roleRepository;
+    private UserRepository userRepository;
 
-    @Autowired
-    PasswordEncoder encoder;
+    private RoleRepository roleRepository;
 
-    @Autowired
-    JwtProvider jwtProvider;
+    private PasswordEncoder encoder;
+
+
+    private JwtProvider jwtProvider;
+
+    public AuthRestAPIs(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtProvider jwtProvider) {
+        this.authenticationManager = authenticationManager;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.encoder = encoder;
+        this.jwtProvider = jwtProvider;
+    }
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginRequest) {
@@ -63,8 +67,12 @@ public class AuthRestAPIs {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpForm signUpRequest) {
-        checkIfUserExistsByUserName(signUpRequest.getUsername());
-        checkIfUserExistsByEmail(signUpRequest.getEmail());
+        if (checkIfUserExistsByUserName(signUpRequest.getUsername())) {
+            return new ResponseEntity<>(new ResponseMessage("username exists"), HttpStatus.FOUND);
+        }
+        if (checkIfUserExistsByEmail(signUpRequest.getEmail())) {
+            return new ResponseEntity<>(new ResponseMessage("Email exists"), HttpStatus.FOUND);
+        }
 
         // Creating user's account
         User user = new User(signUpRequest.getFirstname(), signUpRequest.getLastname(), signUpRequest.getUsername(), signUpRequest.getEmail(),
@@ -108,23 +116,23 @@ public class AuthRestAPIs {
         Set<Role> setOfRoles = new HashSet<>();
 
         roles.forEach(role -> {
-            System.out.println(role);
+            //System.out.println(role);
             switch (role) {
                 case "admin":
                     Role adminRole = roleRepository.findByName(RoleName.ROLE_ADMIN)
-                            .orElseThrow(() -> new RuntimeException("Fail! -> Cause: Admin Role not find."));
+                            .orElseThrow(() -> new RuntimeException("Fail! -> Cause: Admin Role not found."));
                     setOfRoles.add(adminRole);
 
                     break;
                 case "pm":
                     Role pmRole = roleRepository.findByName(RoleName.ROLE_PM)
-                            .orElseThrow(() -> new RuntimeException("Fail! -> Cause: Pm Role not find."));
+                            .orElseThrow(() -> new RuntimeException("Fail! -> Cause: Pm Role not found."));
                     setOfRoles.add(pmRole);
 
                     break;
                 case "user":
                     Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                            .orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+                            .orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not found."));
                     setOfRoles.add(userRole);
                 default:
                     throw new RuntimeException("Fail ! -> Cause : the type" + role + "is not valid");
@@ -133,22 +141,12 @@ public class AuthRestAPIs {
         return setOfRoles;
     }
 
-    private ResponseEntity<?> checkIfUserExistsByUserName(String userName) {
-        if (userRepository.existsByUsername(userName)) {
-            return new ResponseEntity<>(new ResponseMessage("Fail -> Username is already taken!"),
-                    HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(new ResponseMessage("Success -> Username is Free!"),
-                HttpStatus.OK);
+    private Boolean checkIfUserExistsByUserName(String userName) {
+        return userRepository.existsByUsername(userName);
     }
 
-    private ResponseEntity<?> checkIfUserExistsByEmail(String email) {
-        if (userRepository.existsByUsername(email)) {
-            return new ResponseEntity<>(new ResponseMessage("Fail -> Email is already taken!"),
-                    HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(new ResponseMessage("Success -> Email is Free!"),
-                HttpStatus.OK);
+    private Boolean checkIfUserExistsByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 
 }
