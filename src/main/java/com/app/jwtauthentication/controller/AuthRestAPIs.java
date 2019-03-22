@@ -67,10 +67,10 @@ public class AuthRestAPIs {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpForm signUpRequest) {
-        if (checkIfUserExistsByUserName(signUpRequest.getUsername())) {
+        if (userRepository.findByUsername(signUpRequest.getUsername()).isPresent()) {
             return new ResponseEntity<>(new ResponseMessage("username exists"), HttpStatus.FOUND);
         }
-        if (checkIfUserExistsByEmail(signUpRequest.getEmail())) {
+        if (userRepository.findByEmail(signUpRequest.getEmail()).isPresent()) {
             return new ResponseEntity<>(new ResponseMessage("Email exists"), HttpStatus.FOUND);
         }
 
@@ -139,14 +139,6 @@ public class AuthRestAPIs {
             }
         });
         return setOfRoles;
-    }
-
-    private Boolean checkIfUserExistsByUserName(String userName) {
-        return userRepository.existsByUsername(userName);
-    }
-
-    private Boolean checkIfUserExistsByEmail(String email) {
-        return userRepository.existsByEmail(email);
     }
 
 }
