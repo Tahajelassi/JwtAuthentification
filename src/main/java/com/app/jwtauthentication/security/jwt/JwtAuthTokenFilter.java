@@ -16,13 +16,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static java.util.Objects.nonNull;
+
 public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthTokenFilter.class);
+
     @Autowired
-    private JwtProvider tokenProvider;
+    private JwtProvider jwtProvider;
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
+
+    public JwtAuthTokenFilter() {
+
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -30,8 +37,8 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
         try {
 
             String jwt = getJwt(request);
-            if (jwt != null && tokenProvider.validateJwtToken(jwt)) {
-                String username = tokenProvider.getUserNameFromJwtToken(jwt);
+            if (nonNull(jwt) && jwtProvider.validateJwtToken(jwt)) {
+                String username = jwtProvider.getUserNameFromJwtToken(jwt);
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -48,9 +55,9 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
     }
 
     private String getJwt(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
+        String authHeader = request.getHeader("x-auth-token");
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+        if (nonNull(authHeader) && authHeader.startsWith("Bearer ")) {
             return authHeader.replace("Bearer ", "");
         }
 

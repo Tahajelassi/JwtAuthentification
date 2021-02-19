@@ -37,6 +37,7 @@ public class JwtProvider {
         );
         return JWT.create()
                 .withSubject(userPrincipal.getUsername())
+                .withKeyId(userPrincipal.getId())
                 .withArrayClaim("roles", roles.toArray(new String[roles.size()]))
                 .withExpiresAt(new Date(System.currentTimeMillis() + jwtExpiration))
                 .sign(Algorithm.HMAC256(jwtSecret));

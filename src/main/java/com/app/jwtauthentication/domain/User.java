@@ -1,4 +1,4 @@
-package com.app.jwtauthentication.model;
+package com.app.jwtauthentication.domain;
 
 import org.hibernate.annotations.NaturalId;
 
@@ -9,8 +9,10 @@ import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
+import static javax.persistence.FetchType.LAZY;
+
 @Entity
-@Table(name = "users", uniqueConstraints = {
+@Table(name = "User", uniqueConstraints = {
         @UniqueConstraint(columnNames = {
                 "username"
         }),
@@ -19,11 +21,7 @@ import java.util.Set;
         })
 })
 
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class User extends Identity {
     @NotBlank
     @Size(min = 3, max = 50)
     private String firstname;
@@ -49,13 +47,13 @@ public class User {
     @Size(max = 255)
     private String address;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = LAZY)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    public User() {
+    User() {
     }
 
     public User(String firstname, String lastname, String username, String email, String password, String address) {
@@ -67,60 +65,28 @@ public class User {
         this.address = address;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getUsername() {
         return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getFirstname() {
         return firstname;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
     public String getLastname() {
         return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getAddress() {
         return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public Set<Role> getRoles() {

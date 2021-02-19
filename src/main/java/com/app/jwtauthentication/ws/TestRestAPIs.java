@@ -1,4 +1,4 @@
-package com.app.jwtauthentication.controller;
+package com.app.jwtauthentication.ws;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;

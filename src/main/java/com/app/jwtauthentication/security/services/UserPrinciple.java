@@ -1,6 +1,6 @@
 package com.app.jwtauthentication.security.services;
 
-import com.app.jwtauthentication.model.User;
+import com.app.jwtauthentication.domain.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class UserPrinciple implements UserDetails {
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private String id;
 
     private String firstname;
 
@@ -32,7 +32,7 @@ public class UserPrinciple implements UserDetails {
 
     private String address;
 
-    public UserPrinciple(Long id, String firstname,
+    public UserPrinciple(String id, String firstname,
                          String lastname,
                          String username, String email, String password,
                          Collection<? extends GrantedAuthority> authorities, String address) {
@@ -63,7 +63,7 @@ public class UserPrinciple implements UserDetails {
         );
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 

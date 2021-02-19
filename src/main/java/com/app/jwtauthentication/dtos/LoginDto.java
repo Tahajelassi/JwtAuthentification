@@ -1,16 +1,10 @@
-package com.app.jwtauthentication.message.request;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+package com.app.jwtauthentication.dtos;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
-public class LoginForm {
+public class LoginDto {
+
     @NotBlank
     @Size(min = 3, max = 60)
     private String username;
@@ -19,4 +13,15 @@ public class LoginForm {
     @Size(min = 6, max = 40)
     private String password;
 
+    private LoginDto() {
+
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 }

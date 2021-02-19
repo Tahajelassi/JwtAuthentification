@@ -1,19 +1,12 @@
-package com.app.jwtauthentication.message.request;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+package com.app.jwtauthentication.dtos;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.Set;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
+public class SignUpDto {
 
-public class SignUpForm {
     @NotBlank
     @Size(min = 3, max = 50)
     private String firstname;
@@ -41,4 +34,35 @@ public class SignUpForm {
     @Size(max = 255)
     private String address;
 
+    private SignUpDto() {
+
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public Set<String> getRole() {
+        return role;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getAddress() {
+        return address;
+    }
 }
