@@ -1,53 +1,44 @@
 package com.app.jwtauthentication.ws;
 
-import com.app.jwtauthentication.domain.Blog;
-import com.app.jwtauthentication.domain.User;
 import com.app.jwtauthentication.dtos.BlogDto;
-import com.app.jwtauthentication.repository.BlogRepository;
-import com.app.jwtauthentication.repository.UserRepository;
-import com.app.jwtauthentication.security.services.UserPrinciple;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.transaction.annotation.Transactional;
+import com.app.jwtauthentication.services.BlogService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
-@RestController("/api/blog")
+@RestController
 public class BlogWebService {
 
-    private final BlogRepository blogRepository;
-    private final UserRepository userRepository;
+    private final BlogService blogService;
 
-    public BlogWebService(BlogRepository blogRepository,
-                          UserRepository userRepository) {
-        this.blogRepository = blogRepository;
-        this.userRepository = userRepository;
+    public BlogWebService(BlogService blogService) {
+        this.blogService = blogService;
     }
 
-    @PostMapping
-    @Transactional
+    @PostMapping("/api/blog/")
     public BlogDto saveBlog(@RequestBody BlogDto blogDto) {
-        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User createdBy = userRepository.findById(userPrinciple.getId())
-                .orElseThrow(RuntimeException::new);
-        Blog blog = this.blogRepository.save(new Blog(blogDto.getContent(), createdBy));
-        return new BlogDto(blog);
+        return this.blogService.saveBlog(blogDto);
     }
 
-    @GetMapping({"id"})
+    @GetMapping("/api/blog/{id}")
     public BlogDto getBlogById(@PathVariable String id) {
-        Blog blog = this.blogRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(String.format("Blog not found, %s", id)));
-        return new BlogDto(blog);
+        return this.blogService.getBlogById(id);
     }
 
-    @GetMapping
+    @GetMapping("/api/blog/")
     public List<BlogDto> getAllBlogs() {
-        return this.blogRepository.findAll()
-                .stream()
-                .map(BlogDto::new)
-                .collect(Collectors.toList());
+        return this.blogService.getAllBlogs();
+    }
+
+    @DeleteMapping("/api/blog/{id}")
+    public ResponseEntity<String> deleteBlog(@PathVariable String id) {
+        try {
+            this.blogService.removeBlog(id);
+            return ResponseEntity.ok("Blog deleted");
+        } catch (RuntimeException e) {
+            return ResponseEntity.ok(e.getMessage());
+        }
     }
 }

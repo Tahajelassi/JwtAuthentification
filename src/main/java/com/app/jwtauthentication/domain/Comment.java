@@ -1,5 +1,7 @@
 package com.app.jwtauthentication.domain;
 
+import org.springframework.util.Assert;
+
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import java.time.LocalDateTime;
@@ -20,6 +22,11 @@ public class Comment extends Identity {
 
     }
 
+    public Comment(User commentedBy, String content) {
+        this.commentedBy = commentedBy;
+        this.content = content;
+    }
+
     public User getCommentedBy() {
         return commentedBy;
     }
@@ -30,5 +37,12 @@ public class Comment extends Identity {
 
     public LocalDateTime getCommentedAt() {
         return commentedAt;
+    }
+
+    public Comment updateComment(String content) {
+        Assert.notNull(content, "content cannot be null");
+        this.content = content;
+        this.commentedAt = now();
+        return this;
     }
 }

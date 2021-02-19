@@ -56,7 +56,9 @@ public class User extends Identity {
     User() {
     }
 
-    public User(String firstname, String lastname, String username, String email, String password, String address) {
+    public User(String firstname, String lastname,
+                String username, String email,
+                String password, String address) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.username = username;

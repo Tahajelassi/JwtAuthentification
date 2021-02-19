@@ -1,5 +1,6 @@
 package com.app.jwtauthentication.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -9,6 +10,7 @@ import java.util.List;
 
 import static java.time.LocalDateTime.now;
 import static javax.persistence.FetchType.LAZY;
+import static org.springframework.util.Assert.notNull;
 
 @Entity
 public class Blog extends Identity {
@@ -16,10 +18,10 @@ public class Blog extends Identity {
     @ManyToOne(fetch = LAZY)
     private User createdBy;
 
-    @OneToMany(fetch = LAZY)
+    @OneToMany(fetch = LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     private List<ThumbsUp> thumbsUps = new ArrayList<>();
 
-    @OneToMany(fetch = LAZY)
+    @OneToMany(fetch = LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
     private String content;
@@ -53,5 +55,15 @@ public class Blog extends Identity {
 
     public List<Comment> getComments() {
         return comments;
+    }
+
+    public void addComment(Comment comment) {
+        notNull(comment, "comment cannot be null");
+        this.comments.add(comment);
+    }
+
+    public void removeComment(Comment comment) {
+        notNull(comment, "comment cannot be null");
+        this.comments.remove(comment);
     }
 }

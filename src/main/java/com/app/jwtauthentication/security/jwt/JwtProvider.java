@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -39,7 +40,7 @@ public class JwtProvider {
                 .withSubject(userPrincipal.getUsername())
                 .withKeyId(userPrincipal.getId())
                 .withArrayClaim("roles", roles.toArray(new String[roles.size()]))
-                .withExpiresAt(new Date(System.currentTimeMillis() + jwtExpiration))
+                .withExpiresAt(Date.from(ZonedDateTime.now().plusMinutes(jwtExpiration).toInstant()))
                 .sign(Algorithm.HMAC256(jwtSecret));
 
     }
@@ -65,6 +66,5 @@ public class JwtProvider {
 
     String getUserNameFromJwtToken(String token) {
         return JWT.require(Algorithm.HMAC256(jwtSecret)).build().verify(token).getSubject();
-
     }
 }

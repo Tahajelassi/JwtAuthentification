@@ -1,6 +1,7 @@
 package com.app.jwtauthentication.dtos;
 
 import com.app.jwtauthentication.domain.User;
+import com.app.jwtauthentication.security.services.UserPrinciple;
 
 public class UserDto {
 
@@ -17,6 +18,14 @@ public class UserDto {
         this.lastname = user.getLastname();
         this.address = user.getAddress();
         this.email = user.getEmail();
+    }
+
+    public UserDto(UserPrinciple userPrinciple) {
+        this.id = userPrinciple.getId();
+        this.firstname = userPrinciple.getFirstname();
+        this.lastname = userPrinciple.getLastname();
+        this.address = userPrinciple.getAddress();
+        this.email = userPrinciple.getEmail();
     }
 
     public String getId() {

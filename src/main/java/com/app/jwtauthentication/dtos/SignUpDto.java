@@ -1,5 +1,7 @@
 package com.app.jwtauthentication.dtos;
 
+import com.app.jwtauthentication.domain.RoleName;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -24,8 +26,7 @@ public class SignUpDto {
     @Email
     private String email;
 
-
-    private Set<String> role;
+    private Set<RoleName> roles;
 
     @NotBlank
     @Size(min = 6, max = 40)
@@ -54,8 +55,8 @@ public class SignUpDto {
         return email;
     }
 
-    public Set<String> getRole() {
-        return role;
+    public Set<RoleName> getRoles() {
+        return roles;
     }
 
     public String getPassword() {
