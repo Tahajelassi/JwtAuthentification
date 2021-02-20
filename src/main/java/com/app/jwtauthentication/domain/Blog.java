@@ -66,4 +66,14 @@ public class Blog extends Identity {
         notNull(comment, "comment cannot be null");
         this.comments.remove(comment);
     }
+
+    public void addThumbsUp(ThumbsUp thumbsUp) {
+        notNull(thumbsUp, "thumbsUp cannot be null");
+        this.thumbsUps.add(thumbsUp);
+    }
+
+    public void removeThumbsUp(ThumbsUp thumbsUp) {
+        notNull(thumbsUp, "thumbsUp cannot be null");
+        this.thumbsUps.remove(thumbsUp);
+    }
 }

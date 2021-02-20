@@ -17,22 +17,22 @@ public class BlogWebService {
         this.blogService = blogService;
     }
 
-    @PostMapping("/api/blog/")
+    @PostMapping("/api/blogs")
     public BlogDto saveBlog(@RequestBody BlogDto blogDto) {
         return this.blogService.saveBlog(blogDto);
     }
 
-    @GetMapping("/api/blog/{id}")
+    @GetMapping("/api/blogs/{id}")
     public BlogDto getBlogById(@PathVariable String id) {
         return this.blogService.getBlogById(id);
     }
 
-    @GetMapping("/api/blog/")
+    @GetMapping("/api/blogs")
     public List<BlogDto> getAllBlogs() {
         return this.blogService.getAllBlogs();
     }
 
-    @DeleteMapping("/api/blog/{id}")
+    @DeleteMapping("/api/blogs/{id}")
     public ResponseEntity<String> deleteBlog(@PathVariable String id) {
         try {
             this.blogService.removeBlog(id);

@@ -1,9 +1,8 @@
 package com.app.jwtauthentication.ws;
 
 import com.app.jwtauthentication.dtos.JwtResponse;
-import com.app.jwtauthentication.dtos.LoginDto;
-import com.app.jwtauthentication.dtos.SignUpDto;
-import com.app.jwtauthentication.dtos.UserDto;
+import com.app.jwtauthentication.dtos.UserCredentialsDto;
+import com.app.jwtauthentication.dtos.UserSignUpDto;
 import com.app.jwtauthentication.services.AuthenticationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,16 +25,16 @@ public class AuthenticationWebService {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginDto loginDto) {
-        JwtResponse jwtResponse = this.authenticationService.authenticateUser(loginDto);
+    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody UserCredentialsDto userCredentialsDto) {
+        JwtResponse jwtResponse = this.authenticationService.authenticateUser(userCredentialsDto);
         return ok(jwtResponse);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpDto signUpDto) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody UserSignUpDto userSignUpDto) {
         try {
-            UserDto userDto = this.authenticationService.registerUser(signUpDto);
-            return new ResponseEntity<>(userDto, CREATED);
+            JwtResponse jwtResponse = this.authenticationService.registerUser(userSignUpDto);
+            return new ResponseEntity<>(jwtResponse, CREATED);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
         }

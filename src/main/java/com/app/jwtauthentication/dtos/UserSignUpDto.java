@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.Set;
 
-public class SignUpDto {
+public class UserSignUpDto extends UserCredentialsDto {
 
     @NotBlank
     @Size(min = 3, max = 50)
@@ -18,25 +18,17 @@ public class SignUpDto {
     private String lastname;
 
     @NotBlank
-    @Size(min = 3, max = 50)
-    private String username;
-
-    @NotBlank
     @Size(max = 60)
     @Email
     private String email;
 
     private Set<RoleName> roles;
 
-    @NotBlank
-    @Size(min = 6, max = 40)
-    private String password;
-
     @Size(max = 255)
     private String address;
 
-    private SignUpDto() {
-
+    private UserSignUpDto() {
+        super();
     }
 
     public String getFirstname() {
@@ -47,20 +39,12 @@ public class SignUpDto {
         return lastname;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
     public String getEmail() {
         return email;
     }
 
     public Set<RoleName> getRoles() {
         return roles;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public String getAddress() {

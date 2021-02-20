@@ -3,7 +3,7 @@ package com.app.jwtauthentication.dtos;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-public class LoginDto {
+public class UserCredentialsDto {
 
     @NotBlank
     @Size(min = 3, max = 60)
@@ -13,7 +13,7 @@ public class LoginDto {
     @Size(min = 6, max = 40)
     private String password;
 
-    private LoginDto() {
+    protected UserCredentialsDto() {
 
     }
 

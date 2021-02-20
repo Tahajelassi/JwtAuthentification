@@ -60,12 +60,15 @@ public class CommentService {
         Comment comment = this.commentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("comment not found"));
 
-        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder
-                .getContext().getAuthentication().getPrincipal();
-
-        if (!comment.getCommentedBy().getId().equals(userPrinciple.getId())) {
+        if (!this.isOwnComment(comment)) {
             throw new RuntimeException("can only delete your comment");
         }
         blog.removeComment(comment);
+    }
+
+    private boolean isOwnComment(Comment comment) {
+        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder
+                .getContext().getAuthentication().getPrincipal();
+        return comment.getCommentedBy().getId().equals(userPrinciple.getId());
     }
 }

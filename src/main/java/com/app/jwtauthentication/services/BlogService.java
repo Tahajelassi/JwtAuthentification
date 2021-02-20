@@ -52,11 +52,16 @@ public class BlogService {
     public void removeBlog(String id) {
         Blog blog = this.blogRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Blog not found"));
-        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder
-                .getContext().getAuthentication().getPrincipal();
-        if (!blog.getCreatedBy().getId().equals(userPrinciple.getId())) {
+
+        if (!this.isOwnBlog(blog)) {
             throw new RuntimeException("can only delete your blog");
         }
         this.blogRepository.delete(blog);
+    }
+
+    private boolean isOwnBlog(Blog blog) {
+        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder
+                .getContext().getAuthentication().getPrincipal();
+        return blog.getCreatedBy().getId().equals(userPrinciple.getId());
     }
 }
